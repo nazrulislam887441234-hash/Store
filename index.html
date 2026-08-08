@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop Storefront</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-wrapper">
+        <button id="hamburger-btn" class="icon-btn" aria-label="Open Menu">☰</button>
+        <img class="shop-logo-img shop-logo-display" src="" alt="Shop Logo">
+        <span class="shop-title-text shop-name-display">Loading...</span>
+      </div>
+      <div class="header-actions">
+        <a href="checkout.html" class="icon-btn" aria-label="Cart">
+          🛒
+          <span class="cart-badge-count">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- SEARCH BAR -->
+  <div class="search-container">
+    <div class="container">
+      <div class="search-box">
+        <span class="search-icon-inside">🔍</span>
+        <input type="text" id="home-search-input" class="search-input" placeholder="পণ্য বা ক্যাটাগরি খুঁজুন...">
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- HERO BANNER CAROUSEL -->
+    <section class="banner-carousel-section">
+      <div class="carousel-viewport">
+        <div id="banner-track" class="carousel-track">
+          <div class="carousel-slide skeleton"></div>
+        </div>
+        <div id="banner-dots" class="carousel-dots"></div>
+      </div>
+    </section>
+
+    <!-- CATEGORIES SECTION (LIMIT 25) -->
+    <section>
+      <div class="section-header">
+        <h2 class="section-title">ক্যাটাগরি সমূহ</h2>
+        <a href="categories.html" class="view-all-link">সবগুলো দেখুন →</a>
+      </div>
+      <div id="categories-container" class="categories-grid">
+        <!-- Skeleton Loaders -->
+        <div class="category-card skeleton" style="height:90px;"></div>
+        <div class="category-card skeleton" style="height:90px;"></div>
+        <div class="category-card skeleton" style="height:90px;"></div>
+        <div class="category-card skeleton" style="height:90px;"></div>
+      </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS -->
+    <section style="margin-top: 30px;">
+      <div class="section-header">
+        <h2 class="section-title">সর্বশেষ পণ্যসমূহ</h2>
+        <a href="all-products.html" class="view-all-link">সব দেখুন →</a>
+      </div>
+      <div id="products-container" class="products-grid">
+        <div class="product-card skeleton-card skeleton"></div>
+        <div class="product-card skeleton-card skeleton"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h3 class="footer-title shop-name-display">Shop Name</h3>
+          <p class="state-desc" id="shop-address-text"></p>
+        </div>
+        <div>
+          <h4 class="footer-title">গুরুত্বপূর্ণ লিংক</h4>
+          <ul class="footer-links">
+            <li><a href="policy.html?type=privacy">গোপনীয়তা নীতি</a></li>
+            <li><a href="policy.html?type=terms">শর্তাবলী</a></li>
+            <li><a href="policy.html?type=return">রিটার্ন ও রিফান্ড নীতি</a></li>
+            <li><a href="policy.html?type=delivery">ডেলিভারি নীতি</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="powered-by">
+        © <span id="current-year"></span> <span class="shop-name-display"></span>. All Rights Reserved. <br>
+        Powered by <a href="https://build.ghotimarket.com" target="_blank" rel="noopener">GHOTI Builder</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SIDE DRAWER -->
+  <div id="drawer-overlay" class="drawer-overlay"></div>
+  <aside id="side-drawer" class="drawer">
+    <div class="drawer-header">
+      <div class="brand-wrapper">
+        <img class="shop-logo-img shop-logo-display" src="" alt="Shop Logo">
+        <span class="shop-title-text shop-name-display">Shop</span>
+      </div>
+      <button id="drawer-close-btn" class="icon-btn">✕</button>
+    </div>
+    <nav class="drawer-menu">
+      <a href="index.html" class="drawer-item active">🏠 হোম পেজ</a>
+      <a href="all-products.html" class="drawer-item">📦 সব পণ্য</a>
+      <a href="categories.html" class="drawer-item">🗂️ ক্যাটাগরি</a>
+      <a href="checkout.html" class="drawer-item">🛒 আমার কার্ট</a>
+      <hr style="border:none; border-top:1px solid var(--border-color); margin:8px 0;">
+      <a id="drawer-phone" href="" class="drawer-item">📞 কল করুন</a>
+      <a id="drawer-email" href="" class="drawer-item">✉️ ইমেইল করুন</a>
+    </nav>
+    <div class="drawer-footer">
+      Powered by <strong>GHOTI Builder</strong>
+    </div>
+  </aside>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item active">
+      <span style="font-size:1.2rem;">🏠</span>
+      <span>হোম</span>
+    </a>
+    <a href="all-products.html" class="nav-item">
+      <span style="font-size:1.2rem;">📦</span>
+      <span>পণ্য</span>
+    </a>
+    <a href="categories.html" class="nav-item">
+      <span style="font-size:1.2rem;">🗂️</span>
+      <span>ক্যাটাগরি</span>
+    </a>
+    <a href="checkout.html" class="nav-item">
+      <span style="font-size:1.2rem;">🛒</span>
+      <span>কার্ট</span>
+    </a>
+  </nav>
+
+  <script type="module">
+    import { initializeStorefront, setupBannerCarousel, formatPrice, addToCart } from "./app.js";
+    import { db, collection, query, where, getDocs, limit } from "./firebase-config.js";
+
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+
+    async function initPage() {
+      const shop = await initializeStorefront();
+      if (!shop) return;
+
+      document.getElementById("shop-address-text").textContent = shop.address || "";
+
+      // Setup Banner
+      if (shop.shopBanner) {
+        setupBannerCarousel(shop.shopBanner);
+      }
+
+      // Load Homepage Categories (Limit 25)
+      const catQuery = query(
+        collection(db, "shops_categories"), 
+        where("shopsId", "==", shop.uid), 
+        limit(25)
+      );
+      const catSnap = await getDocs(catQuery);
+      const catContainer = document.getElementById("categories-container");
+      catContainer.innerHTML = "";
+
+      if (catSnap.empty) {
+        catContainer.innerHTML = `<div class="state-desc">কোনো ক্যাটাগরি পাওয়া যায়নি</div>`;
+      } else {
+        catSnap.forEach(docSnap => {
+          const cData = docSnap.data();
+          catContainer.innerHTML += `
+            <a href="category.html?${docSnap.id}" class="category-card">
+              <img src="${cData.categoryImage || 'https://via.placeholder.com/52'}" class="category-img" alt="${cData.categoryName}">
+              <span class="category-name">${cData.categoryName}</span>
+            </a>
+          `;
+        });
+      }
+
+      // Load Latest Products
+      const prodQuery = query(
+        collection(db, "shops_products"),
+        where("shopsId", "==", shop.uid),
+        where("active", "==", true),
+        limit(20)
+      );
+      const prodSnap = await getDocs(prodQuery);
+      const prodContainer = document.getElementById("products-container");
+      prodContainer.innerHTML = "";
+
+      if (prodSnap.empty) {
+        prodContainer.innerHTML = `
+          <div class="state-box" style="grid-column: span 2;">
+            <div class="state-title">কোনো পণ্য পাওয়া যায়নি</div>
+          </div>
+        `;
+      } else {
+        prodSnap.forEach(docSnap => {
+          const p = { id: docSnap.id, ...docSnap.data() };
+          const hasDiscount = p.productOldPrice && p.productOldPrice > p.productPrice;
+          const discountPercent = hasDiscount ? Math.round(((p.productOldPrice - p.productPrice) / p.productOldPrice) * 100) : 0;
+
+          prodContainer.innerHTML += `
+            <div class="product-card">
+              <a href="product.html?${p.id}" class="product-thumb-wrapper">
+                <img src="${(p.images && p.images[0]) || 'https://via.placeholder.com/200'}" class="product-thumb" loading="lazy" alt="${p.productName}">
+                ${hasDiscount ? `<span class="discount-tag">-${discountPercent}%</span>` : ''}
+              </a>
+              <div class="product-details">
+                <a href="product.html?${p.id}" class="product-title">${p.productName}</a>
+                <div class="price-wrapper">
+                  <span class="current-price">${formatPrice(p.productPrice)}</span>
+                  ${hasDiscount ? `<span class="old-price">${formatPrice(p.productOldPrice)}</span>` : ''}
+                </div>
+                <div class="card-actions">
+                  <a href="product.html?${p.id}" class="btn btn-outline">অর্ডার</a>
+                  <button class="btn btn-primary add-cart-btn" data-id="${p.id}">কার্ট</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        // Quick Add to Cart Listeners
+        document.querySelectorAll(".add-cart-btn").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            const pId = e.target.getAttribute("data-id");
+            const targetProd = prodSnap.docs.find(d => d.id === pId);
+            if (targetProd) {
+              const pData = { id: targetProd.id, ...targetProd.data() };
+              if (pData.variants && pData.variants.length > 0) {
+                window.location.href = `product.html?${pData.id}`;
+              } else {
+                addToCart(pData);
+              }
+            }
+          });
+        });
+      }
+
+      // Realtime Homepage Search Handler
+      document.getElementById("home-search-input").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          const q = e.target.value.trim();
+          if (q) window.location.href = `all-products.html?q=${encodeURIComponent(q)}`;
+        }
+      });
+    }
+
+    initPage();
+  </script>
+</body>
+</html>
