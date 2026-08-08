@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>সব ক্যাটাগরি</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-wrapper">
+        <a href="index.html" class="icon-btn">←</a>
+        <span class="shop-title-text">সব ক্যাটাগরি</span>
+      </div>
+      <a href="checkout.html" class="icon-btn">🛒<span class="cart-badge-count">0</span></a>
+    </div>
+  </header>
+
+  <main class="container" style="margin-top:20px;">
+    <div id="all-categories-grid" class="categories-grid" style="grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));">
+      <div class="category-card skeleton" style="height:100px;"></div>
+      <div class="category-card skeleton" style="height:100px;"></div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeStorefront } from "./app.js";
+    import { db, collection, query, where, getDocs } from "./firebase-config.js";
+
+    async function init() {
+      const shop = await initializeStorefront();
+      if (!shop) return;
+
+      const q = query(collection(db, "shops_categories"), where("shopsId", "==", shop.uid));
+      const snap = await getDocs(q);
+      const container = document.getElementById("all-categories-grid");
+      container.innerHTML = "";
+
+      if (snap.empty) {
+        container.innerHTML = `<div class="state-box" style="grid-column:1/-1;"><div class="state-title">কোনো ক্যাটাগরি পাওয়া যায়নি</div></div>`;
+        return;
+      }
+
+      snap.forEach(docSnap => {
+        const c = docSnap.data();
+        container.innerHTML += `
+          <a href="category.html?${docSnap.id}" class="category-card">
+            <img src="${c.categoryImage || 'https://via.placeholder.com/60'}" class="category-img" style="width:60px;height:60px;" alt="${c.categoryName}">
+            <span class="category-name">${c.categoryName}</span>
+          </a>
+        `;
+      });
+    }
+    init();
+  </script>
+</body>
+</html>
