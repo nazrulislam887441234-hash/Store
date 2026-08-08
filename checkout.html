@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>অর্ডার সম্পন্ন করুন</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-weight: 700; margin-bottom: 4px; font-size: 0.88rem; }
+    .form-control { width: 100%; height: 44px; padding: 0 12px; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.95rem; }
+    .cart-summary-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--border-color); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand-wrapper">
+        <a href="index.html" class="icon-btn">←</a>
+        <span class="shop-title-text">চেকআউট</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="margin-top:20px;">
+    <div id="checkout-wrapper" style="display:grid; grid-template-columns:1fr; gap:20px;">
+      
+      <!-- Cart Items Summary -->
+      <div style="background:#fff; padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+        <h2 style="font-size:1.1rem; font-weight:700; margin-bottom:12px;">আপনার অর্ডার</h2>
+        <div id="cart-items-list"></div>
+        <div style="margin-top:16px; border-top:1px solid var(--border-color); padding-top:10px;">
+          <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.1rem;">
+            <span>সর্বমোট:</span>
+            <span id="checkout-subtotal" style="color:var(--primary);">৳0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Checkout Form -->
+      <div style="background:#fff; padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+        <h2 style="font-size:1.1rem; font-weight:700; margin-bottom:16px;">ডেলিভারি তথ্য</h2>
+        <form id="order-form">
+          <div class="form-group">
+            <label class="form-label">আপনার নাম *</label>
+            <input type="text" id="cust-name" class="form-control" placeholder="সম্পূর্ণ নাম লিখুন" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">মোবাইল নম্বর *</label>
+            <input type="tel" id="cust-phone" class="form-control" placeholder="01XXXXXXXXX" pattern="[0-9]{11}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">বিভাগ / জিলা / উপজেলা *</label>
+            <input type="text" id="cust-region" class="form-control" placeholder="যেমন: ঢাকা, মিরপুর" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">সম্পূর্ণ ঠিকানা *</label>
+            <textarea id="cust-address" class="form-control" style="height:80px; padding:8px 12px;" placeholder="বাসা নম্বর, রোড নম্বর, এলাকা..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">অর্ডার নোট (ঐচ্ছিক)</label>
+            <input type="text" id="cust-note" class="form-control" placeholder="বিশেষ কোনো বার্তা থাকলে লিখুন">
+          </div>
+          <div class="form-group" style="margin-top:20px;">
+            <div style="background:var(--primary-light); padding:12px; border-radius:var(--radius-sm); font-weight:700; color:var(--primary);">
+              💳 পেমেন্ট মেথড: ক্যাশ অন ডেলিভারি (Cash On Delivery)
+            </div>
+          </div>
+          <button type="submit" id="submit-order-btn" class="btn btn-primary" style="width:100%; height:50px; font-size:1.1rem; margin-top:10px;">অর্ডার নিশ্চিত করুন</button>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeStorefront, getCart, updateCartQuantity, formatPrice, showToast } from "./app.js";
+    import { db, collection, addDoc } from "./firebase-config.js";
+
+    let currentShop = null;
+
+    async function init() {
+      currentShop = await initializeStorefront();
+      if (!currentShop) return;
+
+      renderCartList();
+
+      document.getElementById("order-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const cart = getCart();
+        if (cart.length === 0) {
+          alert("আপনার কার্ট খালি!");
+          return;
+        }
+
+        const btn = document.getElementById("submit-order-btn");
+        btn.disabled = true;
+        btn.textContent = "অর্ডার প্রসেস হচ্ছে...";
+
+        const orderData = {
+          shopsId: currentShop.uid,
+          shopName: currentShop.shopName,
+          customerName: document.getElementById("cust-name").value.trim(),
+          customerPhone: document.getElementById("cust-phone").value.trim(),
+          region: document.getElementById("cust-region").value.trim(),
+          fullAddress: document.getElementById("cust-address").value.trim(),
+          orderNote: document.getElementById("cust-note").value.trim(),
+          items: cart,
+          totalAmount: cart.reduce((sum, item) => sum + item.totalPrice, 0),
+          paymentMethod: "Cash On Delivery",
+          status: "Pending",
+          createdAt: new Date()
+        };
+
+        try {
+          await addDoc(collection(db, "shops_orders"), orderData);
+          localStorage.removeItem(`ghoti_builder_cart_${currentShop.usernameLower || currentShop.id}`);
+          
+          document.getElementById("checkout-wrapper").innerHTML = `
+            <div class="state-box" style="grid-column:1/-1;">
+              <div class="state-icon" style="color:var(--primary);">🎉</div>
+              <div class="state-title">আপনার অর্ডার সফলভাবে গৃহীত হয়েছে!</div>
+              <div class="state-desc">খুব শীঘ্রই আমাদের প্রতিনিধি আপনার সাথে ফোনে যোগাযোগ করবে।</div>
+              <a href="index.html" class="btn btn-primary" style="margin:20px auto 0 auto; width:180px;">হোমে ফিরে যান</a>
+            </div>
+          `;
+        } catch (err) {
+          console.error(err);
+          showToast("অর্ডার দেওয়া সম্ভব হয়নি। আবার চেষ্টা করুন।");
+          btn.disabled = false;
+          btn.textContent = "অর্ডার নিশ্চিত করুন";
+        }
+      });
+    }
+
+    function renderCartList() {
+      const cart = getCart();
+      const container = document.getElementById("cart-items-list");
+      container.innerHTML = "";
+
+      if (cart.length === 0) {
+        container.innerHTML = `<div class="state-desc" style="padding:20px 0;">কার্ট খালি রয়েছে</div>`;
+        document.getElementById("checkout-subtotal").textContent = "৳0";
+        return;
+      }
+
+      let grandTotal = 0;
+      cart.forEach(item => {
+        grandTotal += item.totalPrice;
+        const variantsStr = item.selectedVariants.map(v => `${v.title}: ${v.option}`).join(', ');
+
+        container.innerHTML += `
+          <div class="cart-summary-item">
+            <div style="display:flex; gap:10px; align-items:center;">
+              <img src="${item.image || 'https://via.placeholder.com/50'}" style="width:48px; height:48px; border-radius:6px; object-fit:cover;">
+              <div>
+                <div style="font-weight:700; font-size:0.9rem;">${item.productName}</div>
+                ${variantsStr ? `<div style="font-size:0.75rem; color:var(--text-muted);">${variantsStr}</div>` : ''}
+                <div style="font-size:0.85rem; font-weight:700; color:var(--primary);">${formatPrice(item.unitPrice)} × ${item.quantity}</div>
+              </div>
+            </div>
+            <div style="font-weight:800;">${formatPrice(item.totalPrice)}</div>
+          </div>
+        `;
+      });
+
+      document.getElementById("checkout-subtotal").textContent = formatPrice(grandTotal);
+    }
+
+    init();
+  </script>
+</body>
+</html>
